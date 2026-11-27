@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-tema="claro">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,147 +8,150 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>try { const t = localStorage.getItem("tema-fix"); if (t) document.documentElement.dataset.tema = t; } catch (e) {}</script>
 <style>
-  :root {
-    --bg: #070b14; --panel: #0f1626; --panel-2: #131c30; --borde: #1f2a40; --borde-2: #2a3754;
-    --texto: #e8edf6; --suave: #8a96ad; --tenue: #5c6880;
-    --acento: #2dd4bf; --acento-osc: #0f766e; --ambar: #f5b14c; --violeta: #a78bfa;
-    --sube: #fb7185; --baja: #34d399;
-    --radio: 14px;
+  :root, [data-tema="claro"] {
+    --bg: #f3f5f9; --panel: #ffffff; --borde: #e2e7ef; --borde-2: #d3dae5; --hundido: #f6f8fb;
+    --texto: #111827; --suave: #4b5768; --tenue: #8591a3;
+    --acento: #2f5bea; --acento-suave: rgba(47,91,234,.10); --acento-txt: #ffffff;
+    --ambar: #d98a04; --violeta: #7c5cf0; --sube: #dc3d4b; --baja: #0f9f6e;
+    --sube-rgb: 220,61,75; --baja-rgb: 15,159,110; --acento-rgb: 47,91,234; --violeta-rgb: 124,92,240;
+    --grid: rgba(17,24,39,.07); --sombra: 0 1px 2px rgba(17,24,39,.04), 0 4px 14px rgba(17,24,39,.05);
+    --cabecera: linear-gradient(135deg, #2f5bea 0%, #4f46e5 55%, #6d28d9 100%);
+  }
+  [data-tema="oscuro"] {
+    --bg: #161c27; --panel: #1e2634; --borde: #2c3648; --borde-2: #39455b; --hundido: #19202c;
+    --texto: #e7ecf3; --suave: #a3aec0; --tenue: #6f7b8f;
+    --acento: #6d8bff; --acento-suave: rgba(109,139,255,.14); --acento-txt: #0b1430;
+    --ambar: #f2b34a; --violeta: #a68bff; --sube: #f57683; --baja: #3ccf98;
+    --sube-rgb: 245,118,131; --baja-rgb: 60,207,152; --acento-rgb: 109,139,255; --violeta-rgb: 166,139,255;
+    --grid: rgba(231,236,243,.07); --sombra: none;
+    --cabecera: linear-gradient(135deg, #2a3f8f 0%, #3a3486 55%, #4b2a7a 100%);
   }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    margin: 0; color: var(--texto); font-family: Inter, system-ui, sans-serif; font-size: 14px;
-    background:
-      radial-gradient(1200px 500px at 15% -10%, rgba(45,212,191,.10), transparent 60%),
-      radial-gradient(900px 400px at 95% 0%, rgba(167,139,250,.08), transparent 60%),
-      var(--bg);
-    min-height: 100vh;
-  }
-  main { max-width: 1240px; margin: 0 auto; padding: 36px 24px 64px; }
-  .mono { font-family: "JetBrains Mono", monospace; }
+  body { margin: 0; background: var(--bg); color: var(--texto); font-family: Inter, system-ui, sans-serif; font-size: 14px; transition: background .2s; }
+  .ancho { max-width: 1680px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 40px); }
 
-  /* Encabezado */
-  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 26px; }
-  .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--acento); font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 10px; }
-  .eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--acento); box-shadow: 0 0 0 4px rgba(45,212,191,.18); }
-  h1 { font-size: 32px; margin: 0; letter-spacing: -.025em; font-weight: 700; }
-  .sub { color: var(--suave); margin: 8px 0 0; font-size: 15px; max-width: 620px; line-height: 1.5; }
+  .cabecera { background: var(--cabecera); color: #fff; padding: 30px 0 92px; }
+  .cabecera .fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 10px; opacity: .85; }
+  .eyebrow i { width: 7px; height: 7px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.25); }
+  h1 { font-size: 30px; margin: 0; letter-spacing: -.02em; font-weight: 700; }
+  .sub { margin: 8px 0 0; font-size: 15px; max-width: 660px; line-height: 1.5; opacity: .85; }
   .meta { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--borde-2); border-radius: 999px; background: rgba(15,22,38,.7); color: var(--suave); font-size: 12.5px; }
-  .pill b { color: var(--texto); font-weight: 500; }
-  .pill.ok i { width: 7px; height: 7px; border-radius: 50%; background: var(--baja); }
-  .pill.pend i { width: 7px; height: 7px; border-radius: 50%; background: var(--ambar); }
-  .enlaces { display: flex; gap: 8px; }
-  .btn { display: inline-flex; align-items: center; padding: 7px 12px; border-radius: 8px; border: 1px solid var(--borde-2); color: var(--texto); text-decoration: none; font-size: 12.5px; font-weight: 500; background: var(--panel); }
-  .btn:hover { border-color: var(--acento); color: var(--acento); }
+  .pill { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22); font-size: 12.5px; }
+  .pill i { width: 7px; height: 7px; border-radius: 50%; background: #6ee7b7; }
+  .pill.pend i { background: #fcd34d; }
+  .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,.3); color: #fff; text-decoration: none; font: 500 12.5px Inter, sans-serif; background: rgba(255,255,255,.08); cursor: pointer; }
+  .btn:hover { background: rgba(255,255,255,.18); }
 
-  /* Tarjetas */
-  .card { background: linear-gradient(180deg, var(--panel-2), var(--panel)); border: 1px solid var(--borde); border-radius: var(--radio); padding: 20px; }
+  .cuerpo { margin-top: -66px; padding-bottom: 48px; }
+  .card { background: var(--panel); border: 1px solid var(--borde); border-radius: 14px; padding: 20px; box-shadow: var(--sombra); min-width: 0; }
   .card h2 { font-size: 15px; margin: 0; font-weight: 600; }
-  .card .desc { color: var(--suave); font-size: 12.5px; margin: 4px 0 0; }
+  .card .desc { color: var(--suave); font-size: 12.5px; margin: 4px 0 0; line-height: 1.45; }
   .titulo-card { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
   .grid { display: grid; gap: 16px; margin-bottom: 16px; }
+  .fila-1 { grid-template-columns: minmax(320px, 1.05fr) 2.6fr; }
+  .fila-2 { grid-template-columns: 2.6fr minmax(320px, 1.05fr); }
+  .fila-3 { grid-template-columns: repeat(3, 1fr); }
 
-  /* Hero */
-  .hero { grid-template-columns: minmax(300px, 1fr) 2fr; }
-  .ultimo { position: relative; overflow: hidden; }
-  .ultimo::after { content: ""; position: absolute; inset: auto -40px -60px auto; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(45,212,191,.16), transparent 70%); pointer-events: none; }
   .ultimo .label { color: var(--suave); font-size: 12.5px; }
-  .ultimo .valor { font-family: "JetBrains Mono", monospace; font-size: 50px; font-weight: 500; margin: 6px 0 2px; letter-spacing: -.03em; line-height: 1.1; }
+  .ultimo .valor { font-family: "JetBrains Mono", monospace; font-size: 48px; font-weight: 500; margin: 6px 0 2px; letter-spacing: -.03em; line-height: 1.1; }
   .ultimo .valor small { font-family: Inter, sans-serif; font-size: 14px; color: var(--suave); margin-left: 6px; letter-spacing: 0; }
-  .delta { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600; padding: 4px 10px; border-radius: 999px; margin-top: 6px; }
-  .delta.sube { color: var(--sube); background: rgba(251,113,133,.12); }
-  .delta.baja { color: var(--baja); background: rgba(52,211,153,.12); }
-  .delta.igual { color: var(--suave); background: rgba(138,150,173,.12); }
-  .spark { height: 70px; margin-top: 18px; }
-  .nota { color: var(--tenue); font-size: 12px; margin: 12px 0 0; line-height: 1.5; }
+  .delta { display: inline-flex; gap: 6px; font-size: 13.5px; font-weight: 600; padding: 4px 10px; border-radius: 999px; margin-top: 6px; }
+  .delta.sube { color: var(--sube); background: rgba(var(--sube-rgb),.12); }
+  .delta.baja { color: var(--baja); background: rgba(var(--baja-rgb),.12); }
+  .delta.igual { color: var(--suave); background: var(--hundido); }
+  .spark { height: 76px; margin-top: 16px; }
+  .nota { color: var(--tenue); font-size: 12px; margin: 10px 0 0; line-height: 1.5; }
 
   .kpis { grid-template-columns: repeat(3, 1fr); margin: 0; }
-  .kpi { padding: 16px 18px; }
-  .kpi .label { color: var(--suave); font-size: 12px; display: flex; justify-content: space-between; }
-  .kpi .v { font-family: "JetBrains Mono", monospace; font-size: 22px; margin-top: 8px; }
+  .kpi { padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
+  .kpi .label { color: var(--suave); font-size: 12.5px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .kpi .v { font-family: "JetBrains Mono", monospace; font-size: 24px; margin-top: 10px; }
   .kpi .d { color: var(--tenue); font-size: 12px; margin-top: 4px; }
   .v.sube { color: var(--sube); } .v.baja { color: var(--baja); }
-  .barra-rango { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--baja), var(--ambar), var(--sube)); margin: 14px 0 6px; opacity: .85; }
-  .barra-rango span { position: absolute; top: -4px; width: 14px; height: 14px; border-radius: 50%; background: var(--texto); border: 3px solid var(--bg); transform: translateX(-50%); }
+  .barra-rango { position: relative; height: 6px; border-radius: 3px; background: linear-gradient(90deg, var(--baja), var(--ambar), var(--sube)); margin: 18px 0 8px; }
+  .barra-rango span { position: absolute; top: -5px; width: 16px; height: 16px; border-radius: 50%; background: var(--panel); border: 3px solid var(--texto); transform: translateX(-50%); }
   .extremos { display: flex; justify-content: space-between; color: var(--tenue); font-size: 11.5px; font-family: "JetBrains Mono", monospace; }
-  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; }
-  .tag.alcista { color: var(--sube); background: rgba(251,113,133,.12); }
-  .tag.bajista { color: var(--baja); background: rgba(52,211,153,.12); }
+  .tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600; white-space: nowrap; }
+  .tag.alcista { color: var(--sube); background: rgba(var(--sube-rgb),.12); }
+  .tag.bajista { color: var(--baja); background: rgba(var(--baja-rgb),.12); }
 
-  /* Controles */
-  .controles { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .controles { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
   .seg { display: inline-flex; border: 1px solid var(--borde-2); border-radius: 9px; overflow: hidden; background: var(--panel); }
   .seg button { background: transparent; color: var(--suave); border: 0; padding: 7px 12px; font: 500 12.5px Inter, sans-serif; cursor: pointer; }
   .seg button + button { border-left: 1px solid var(--borde-2); }
-  .seg button.activo { background: var(--acento); color: #042f2a; }
+  .seg button.activo { background: var(--acento); color: var(--acento-txt); }
   .toggle { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border: 1px solid var(--borde-2); border-radius: 9px; color: var(--suave); font-size: 12.5px; cursor: pointer; user-select: none; background: var(--panel); }
-  .toggle input { display: none; }
   .toggle i { width: 12px; height: 3px; border-radius: 2px; }
-  .toggle.off { opacity: .45; }
-  .lienzo { position: relative; height: 380px; }
-  .lienzo.bajo { height: 240px; }
+  .toggle.off { opacity: .4; }
+  .lienzo { position: relative; height: 420px; }
+  .lienzo.bajo { height: 220px; }
 
-  .dos { grid-template-columns: 1fr 1fr; }
   .stats-mini { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
-  .stats-mini div { background: var(--bg); border: 1px solid var(--borde); border-radius: 9px; padding: 9px 10px; }
+  .stats-mini div { background: var(--hundido); border: 1px solid var(--borde); border-radius: 9px; padding: 9px 10px; }
   .stats-mini span { display: block; color: var(--tenue); font-size: 11px; }
-  .stats-mini b { font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 13.5px; }
+  .stats-mini b { font-family: "JetBrains Mono", monospace; font-weight: 500; font-size: 13px; }
 
-  /* Mapa de calor */
   .heat-wrap { overflow-x: auto; }
-  table.heat { border-collapse: separate; border-spacing: 3px; width: 100%; min-width: 760px; }
+  table.heat { border-collapse: separate; border-spacing: 4px; width: 100%; min-width: 820px; }
   .heat th { color: var(--tenue); font-weight: 500; font-size: 11.5px; padding: 4px; }
-  .heat th.anio { text-align: left; color: var(--suave); font-family: "JetBrains Mono", monospace; }
-  .heat td { text-align: center; font-family: "JetBrains Mono", monospace; font-size: 11.5px; padding: 8px 2px; border-radius: 6px; color: var(--texto); }
-  .heat td.vacia { background: rgba(31,42,64,.35); color: var(--tenue); }
-  .heat td.total { font-weight: 600; border: 1px solid var(--borde-2); }
+  .heat th.anio { text-align: left; color: var(--suave); font-family: "JetBrains Mono", monospace; width: 56px; }
+  .heat td { text-align: center; font-family: "JetBrains Mono", monospace; font-size: 12px; padding: 9px 2px; border-radius: 6px; color: var(--texto); }
+  .heat td.vacia { background: var(--hundido); color: var(--tenue); }
+  .heat td.total { font-weight: 600; outline: 1px solid var(--borde-2); }
+  .heat td.fuerte { color: #fff; }
   .escala { display: flex; align-items: center; gap: 8px; color: var(--tenue); font-size: 11.5px; }
-  .escala i { width: 120px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(52,211,153,.85), rgba(31,42,64,.6), rgba(251,113,133,.85)); }
+  .escala i { width: 120px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, rgba(var(--baja-rgb),.9), var(--hundido), rgba(var(--sube-rgb),.9)); }
 
-  /* Tabla y pipeline */
-  table.datos { width: 100%; border-collapse: collapse; font-size: 13px; }
-  .datos th { text-align: left; color: var(--tenue); font-weight: 500; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; padding: 0 8px 10px; border-bottom: 1px solid var(--borde); }
-  .datos td { padding: 9px 8px; border-bottom: 1px solid rgba(31,42,64,.6); font-family: "JetBrains Mono", monospace; }
+  table.datos { width: 100%; border-collapse: collapse; }
+  .datos th { text-align: left; color: var(--tenue); font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; padding: 0 6px 10px; border-bottom: 1px solid var(--borde); }
+  .datos td { padding: 9.5px 6px; border-bottom: 1px solid var(--borde); font-family: "JetBrains Mono", monospace; font-size: 12.5px; }
   .datos td:first-child { font-family: Inter, sans-serif; color: var(--suave); }
   .datos th:not(:first-child), .datos td:not(:first-child) { text-align: right; }
   .datos tr:last-child td { border-bottom: 0; }
 
   ol.pasos { list-style: none; margin: 0; padding: 0; counter-reset: paso; }
-  .pasos li { counter-increment: paso; position: relative; padding: 0 0 16px 40px; }
-  .pasos li::before { content: counter(paso); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 8px; background: rgba(45,212,191,.12); color: var(--acento); font: 600 12px "JetBrains Mono", monospace; display: grid; place-items: center; }
-  .pasos li:not(:last-child)::after { content: ""; position: absolute; left: 12.5px; top: 30px; bottom: 4px; width: 1px; background: var(--borde-2); }
+  .pasos li { counter-increment: paso; position: relative; padding: 0 0 14px 38px; }
+  .pasos li::before { content: counter(paso); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 7px; background: var(--acento-suave); color: var(--acento); font: 600 12px "JetBrains Mono", monospace; display: grid; place-items: center; }
+  .pasos li:not(:last-child)::after { content: ""; position: absolute; left: 11.5px; top: 28px; bottom: 2px; width: 1px; background: var(--borde-2); }
   .pasos b { display: block; font-size: 13.5px; font-weight: 600; }
   .pasos span { color: var(--suave); font-size: 12.5px; line-height: 1.5; }
-  .pasos code { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--ambar); }
+  .pasos code { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--acento); }
 
-  /* Estado vacío */
   .vacio { display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: center; padding: 34px; }
-  .vacio h2 { font-size: 22px; margin: 0 0 8px; }
+  .vacio h2 { font-size: 22px !important; margin: 0 0 8px !important; }
   .vacio p { color: var(--suave); line-height: 1.6; margin: 0 0 18px; }
+  .vacio .btn { color: var(--acento); border-color: var(--borde-2); background: var(--panel); }
   .check { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .check li { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--borde); border-radius: 10px; background: var(--bg); }
+  .check li { display: flex; gap: 12px; padding: 12px 14px; border: 1px solid var(--borde); border-radius: 10px; background: var(--hundido); }
   .check li i { flex: none; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--borde-2); margin-top: 1px; }
-  .check li.hecho i { border-color: var(--baja); background: var(--baja); box-shadow: inset 0 0 0 3px var(--bg); }
+  .check li.hecho i { border-color: var(--baja); background: var(--baja); box-shadow: inset 0 0 0 3px var(--hundido); }
   .check b { display: block; font-size: 13.5px; }
   .check span { color: var(--suave); font-size: 12.5px; }
 
-  footer { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--borde); color: var(--tenue); font-size: 12.5px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer { padding: 20px 0 32px; border-top: 1px solid var(--borde); color: var(--tenue); font-size: 12.5px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   footer a { color: var(--acento); text-decoration: none; }
 
-  @media (max-width: 960px) {
-    .hero, .dos, .vacio { grid-template-columns: 1fr; }
-    .kpis { grid-template-columns: repeat(2, 1fr); }
-    .meta { align-items: flex-start; }
+  @media (max-width: 1180px) {
+    .fila-1, .fila-2 { grid-template-columns: 1fr; }
+    .fila-3 { grid-template-columns: 1fr 1fr; }
+    .fila-3 > :last-child { grid-column: 1 / -1; }
   }
-  @media (max-width: 560px) { .kpis { grid-template-columns: 1fr; } .stats-mini { grid-template-columns: repeat(2, 1fr); } h1 { font-size: 26px; } }
+  @media (max-width: 760px) {
+    .fila-3, .vacio { grid-template-columns: 1fr; }
+    .kpis { grid-template-columns: 1fr 1fr; }
+    .meta { align-items: flex-start; }
+    .lienzo { height: 320px; }
+  }
+  @media (max-width: 480px) { .kpis { grid-template-columns: 1fr; } .stats-mini { grid-template-columns: 1fr 1fr; } h1 { font-size: 24px; } }
 </style>
 </head>
 <body>
-<main>
-  <header>
+<header class="cabecera">
+  <div class="ancho fila">
     <div>
       <p class="eyebrow"><i></i>Monitor diario · Banxico SIE</p>
       <h1>Tipo de cambio FIX peso-dólar</h1>
@@ -156,15 +159,17 @@
     </div>
     <div class="meta">
       <div class="pill pend" id="estado"><i></i>Cargando datos</div>
-      <div class="enlaces">
+      <div class="acciones">
+        <button class="btn" id="btnTema" type="button">Tema oscuro</button>
         <a class="btn" href="https://github.com/Zidnz/tipo-cambio-mx">Código fuente</a>
         <a class="btn" href="data/tipo_cambio.csv">Descargar CSV</a>
       </div>
     </div>
-  </header>
+  </div>
+</header>
 
+<main class="ancho cuerpo">
   <div id="contenido"></div>
-
   <footer>
     <span>Fuente: Banco de México, Sistema de Información Económica, serie SF43718. Actualización automática con GitHub Actions.</span>
     <span>Proyecto de <a href="https://zidnz.github.io/portafolio-omar-gutierrez/">Omar Gutiérrez</a></span>
@@ -172,7 +177,7 @@
 </main>
 
 <template id="tpl-datos">
-  <section class="grid hero">
+  <section class="grid fila-1">
     <div class="card ultimo">
       <div class="label" id="fechaUltimo">FIX</div>
       <div class="valor"><span id="valorUltimo">--</span><small>MXN por USD</small></div>
@@ -185,24 +190,30 @@
       <div class="card kpi"><div class="label">Variación 1 mes</div><div class="v" id="k-mes">--</div><div class="d" id="k-mes-d">&nbsp;</div></div>
       <div class="card kpi"><div class="label">Variación en el año</div><div class="v" id="k-anio">--</div><div class="d" id="k-anio-d">&nbsp;</div></div>
       <div class="card kpi"><div class="label">Volatilidad 30 días</div><div class="v" id="k-vol">--</div><div class="d">Anualizada, rendimientos logarítmicos</div></div>
-      <div class="card kpi"><div class="label"><span>Tendencia</span><span class="tag" id="k-tend-tag"></span></div><div class="v" id="k-tend">--</div><div class="d" id="k-tend-d">Media móvil 50 vs. 200 días</div></div>
-      <div class="card kpi"><div class="label">Posición en rango 52 semanas</div><div class="barra-rango"><span id="k-pos"></span></div><div class="extremos"><span id="k-min">--</span><span id="k-max">--</span></div></div>
+      <div class="card kpi"><div class="label"><span>Tendencia</span><span class="tag" id="k-tend-tag"></span></div><div class="v" id="k-tend">--</div><div class="d">Media móvil 50 vs. 200 días</div></div>
+      <div class="card kpi"><div class="label">Posición en rango 52 semanas</div><div><div class="barra-rango"><span id="k-pos"></span></div><div class="extremos"><span id="k-min">--</span><span id="k-max">--</span></div></div></div>
     </div>
   </section>
 
-  <section class="card" style="margin-bottom:16px">
-    <div class="titulo-card">
-      <div><h2>Serie histórica</h2><p class="desc">FIX diario con medias móviles. Elige el periodo y las capas.</p></div>
-      <div class="controles">
-        <label class="toggle" data-ds="1"><input type="checkbox" checked><i style="background:var(--ambar)"></i>MM 50</label>
-        <label class="toggle" data-ds="2"><input type="checkbox" checked><i style="background:var(--violeta)"></i>MM 200</label>
-        <div class="seg" id="rangos"><button data-m="1">1M</button><button data-m="3">3M</button><button data-m="12" class="activo">1A</button><button data-m="36">3A</button><button data-m="0">Todo</button></div>
+  <section class="grid fila-2">
+    <div class="card">
+      <div class="titulo-card">
+        <div><h2>Serie histórica</h2><p class="desc">FIX diario con medias móviles. Elige el periodo y las capas.</p></div>
+        <div class="controles">
+          <span class="toggle" data-ds="1"><i style="background:var(--ambar)"></i>MM 50</span>
+          <span class="toggle" data-ds="2"><i style="background:var(--violeta)"></i>MM 200</span>
+          <div class="seg" id="rangos"><button data-m="1">1M</button><button data-m="3">3M</button><button data-m="12" class="activo">1A</button><button data-m="36">3A</button><button data-m="0">Todo</button></div>
+        </div>
       </div>
+      <div class="lienzo"><canvas id="principal"></canvas></div>
     </div>
-    <div class="lienzo"><canvas id="principal"></canvas></div>
+    <div class="card">
+      <div class="titulo-card"><div><h2>Últimas observaciones</h2><p class="desc">Los 10 datos más recientes de Banxico.</p></div></div>
+      <table class="datos" id="ultimos"></table>
+    </div>
   </section>
 
-  <section class="grid dos">
+  <section class="grid fila-3">
     <div class="card">
       <div class="titulo-card"><div><h2>Distribución de rendimientos diarios</h2><p class="desc">Frecuencia de los cambios porcentuales día a día, toda la serie.</p></div></div>
       <div class="lienzo bajo"><canvas id="histo"></canvas></div>
@@ -223,6 +234,16 @@
         <div><span>Fecha máx.</span><b id="v-maxf" style="font-size:12px">--</b></div>
       </div>
     </div>
+    <div class="card">
+      <div class="titulo-card"><div><h2>Cómo se construye</h2><p class="desc">Cada día hábil a las 13:23 (CDMX) corre este flujo en GitHub Actions.</p></div></div>
+      <ol class="pasos">
+        <li><b>Extracción</b><span>API SIE de Banxico, serie <code>SF43718</code>. Carga incremental de los últimos 10 días para capturar revisiones.</span></li>
+        <li><b>Limpieza</b><span>Valores <code>N/E</code> a nulos, tipos, duplicados y orden por fecha.</span></li>
+        <li><b>Validación</b><span>Rango plausible, fechas únicas y sin fechas futuras. Si algo falla, no se publica nada.</span></li>
+        <li><b>Publicación</b><span>CSV y resumen JSON en el repo. Solo hay commit si llegó un dato nuevo.</span></li>
+        <li><b>Dashboard</b><span id="p-final">GitHub Pages recalcula los indicadores en el navegador.</span></li>
+      </ol>
+    </div>
   </section>
 
   <section class="card" style="margin-bottom:16px">
@@ -232,43 +253,32 @@
     </div>
     <div class="heat-wrap"><table class="heat" id="heat"></table></div>
   </section>
-
-  <section class="grid dos">
-    <div class="card">
-      <div class="titulo-card"><div><h2>Últimas observaciones</h2><p class="desc">Los 10 datos más recientes publicados por Banxico.</p></div></div>
-      <table class="datos" id="ultimos"></table>
-    </div>
-    <div class="card">
-      <div class="titulo-card"><div><h2>Cómo se construye</h2><p class="desc">Cada día hábil a las 13:23 (CDMX) corre este flujo en GitHub Actions.</p></div></div>
-      <ol class="pasos">
-        <li><b>Extracción</b><span>API SIE de Banxico, serie <code>SF43718</code>. Carga incremental: solo los últimos 10 días, para capturar revisiones.</span></li>
-        <li><b>Limpieza</b><span>Valores <code>N/E</code> a nulos, conversión de tipos, duplicados y orden por fecha.</span></li>
-        <li><b>Validación</b><span>Rango plausible, fechas únicas y sin fechas futuras. Si algo falla, no se publica nada.</span></li>
-        <li><b>Publicación</b><span>CSV y resumen JSON en el repo. Solo hay commit si llegó un dato nuevo.</span></li>
-        <li><b>Dashboard</b><span id="p-final">GitHub Pages recalcula los indicadores en el navegador.</span></li>
-      </ol>
-    </div>
-  </section>
 </template>
 
 <script>
 const $ = id => document.getElementById(id);
-const COL = { acento: "#2dd4bf", ambar: "#f5b14c", violeta: "#a78bfa", sube: "#fb7185", baja: "#34d399", grid: "rgba(31,42,64,.7)", tick: "#5c6880" };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const num = (x, d = 4) => x == null || isNaN(x) ? "--" : Number(x).toLocaleString("es-MX", { minimumFractionDigits: d, maximumFractionDigits: d });
 const pct = (x, d = 2) => x == null || isNaN(x) ? "--" : (x > 0 ? "+" : "") + num(x, d) + "%";
 const fFecha = (iso, opt = { day: "numeric", month: "short", year: "numeric" }) => new Date(iso + "T12:00:00").toLocaleDateString("es-MX", opt);
 const clase = x => x > 0 ? "sube" : x < 0 ? "baja" : "";
 const MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
 
-Chart.defaults.font.family = "Inter, system-ui, sans-serif";
-Chart.defaults.color = COL.tick;
-const tooltip = { backgroundColor: "#0f1626", borderColor: "#2a3754", borderWidth: 1, titleColor: "#e8edf6", bodyColor: "#e8edf6", padding: 10, cornerRadius: 8 };
+let serie = [], resumen = null, graficas = {}, mesesSel = 12, ocultos = new Set(), C = {};
 
-let serie = [], principal = null;
-
+function leeColores() {
+  C = { acento: css("--acento"), ambar: css("--ambar"), violeta: css("--violeta"), sube: css("--sube"), baja: css("--baja"),
+        grid: css("--grid"), tick: css("--tenue"), panel: css("--panel"), texto: css("--texto"), borde: css("--borde-2"),
+        acentoRgb: css("--acento-rgb"), violetaRgb: css("--violeta-rgb"), subeRgb: css("--sube-rgb"), bajaRgb: css("--baja-rgb") };
+  Chart.defaults.font.family = "Inter, system-ui, sans-serif";
+  Chart.defaults.color = C.tick;
+}
+const tooltip = () => ({ backgroundColor: C.panel, borderColor: C.borde, borderWidth: 1, titleColor: C.texto, bodyColor: C.texto, padding: 10, cornerRadius: 8 });
+const degradado = (rgb, alto, a = .22) => c => { const g = c.chart.ctx.createLinearGradient(0, 0, 0, alto); g.addColorStop(0, `rgba(${rgb},${a})`); g.addColorStop(1, `rgba(${rgb},0)`); return g; };
+function nueva(id, cfg) { if (graficas[id]) graficas[id].destroy(); graficas[id] = new Chart($(id), cfg); return graficas[id]; }
 function mm(vals, n) { const o = []; let s = 0; vals.forEach((v, i) => { s += v; if (i >= n) s -= vals[i - n]; o.push(i >= n - 1 ? s / n : null); }); return o; }
 function std(a) { const m = a.reduce((x, y) => x + y, 0) / a.length; return Math.sqrt(a.reduce((x, y) => x + (y - m) ** 2, 0) / (a.length - 1)); }
-function valorAntesDe(fechaObj) { for (let i = serie.length - 1; i >= 0; i--) if (new Date(serie[i].fecha) <= fechaObj) return serie[i]; return serie[0]; }
+function valorAntesDe(f) { for (let i = serie.length - 1; i >= 0; i--) if (new Date(serie[i].fecha + "T12:00:00") <= f) return serie[i]; return serie[0]; }
 
 function vacio(msg) {
   $("estado").className = "pill pend"; $("estado").innerHTML = "<i></i>Configuración pendiente";
@@ -281,32 +291,29 @@ function vacio(msg) {
       </div>
       <ul class="check">
         <li class="hecho"><i></i><div><b>Código y dashboard publicados</b><span>Repositorio y GitHub Pages activos.</span></div></li>
-        <li><i></i><div><b>Token de Banxico como secret</b><span>Settings, Secrets and variables, Actions: <code>BANXICO_TOKEN</code>.</span></div></li>
+        <li><i></i><div><b>Token de Banxico como secret</b><span>Settings, Secrets and variables, Actions: BANXICO_TOKEN.</span></div></li>
         <li><i></i><div><b>Primera corrida del workflow</b><span>Actions, Actualizar tipo de cambio, Run workflow.</span></div></li>
       </ul>
     </section>`;
 }
 
 function kpis(r) {
-  const u = serie[serie.length - 1], fecha = new Date(u.fecha);
+  const u = serie.at(-1), fecha = new Date(u.fecha + "T12:00:00");
   $("fechaUltimo").textContent = "FIX del " + fFecha(u.fecha, { weekday: "long", day: "numeric", month: "long", year: "numeric" });
   $("valorUltimo").textContent = num(u.fix);
   const d = $("delta"), v = r.variacion_diaria;
   d.className = "delta " + (v > 0 ? "sube" : v < 0 ? "baja" : "igual");
   d.textContent = (v > 0 ? "+" : "") + num(v) + "  (" + pct(r.variacion_diaria_pct) + ")  vs. día hábil anterior";
-
   const varDesde = (dias, idV, idD) => {
     const f = new Date(fecha); f.setDate(f.getDate() - dias);
     const b = valorAntesDe(f), x = (u.fix / b.fix - 1) * 100;
     $(idV).textContent = pct(x); $(idV).className = "v " + clase(x);
-    $(idD).textContent = "Desde " + num(b.fix, 4) + " el " + fFecha(b.fecha, { day: "numeric", month: "short" });
+    $(idD).textContent = "Desde " + num(b.fix) + " el " + fFecha(b.fecha, { day: "numeric", month: "short" });
   };
-  varDesde(7, "k-sem", "k-sem-d");
-  varDesde(30, "k-mes", "k-mes-d");
+  varDesde(7, "k-sem", "k-sem-d"); varDesde(30, "k-mes", "k-mes-d");
   $("k-anio").textContent = pct(r.variacion_anio_pct); $("k-anio").className = "v " + clase(r.variacion_anio_pct);
-  $("k-anio-d").textContent = r.variacion_anio_pct > 0 ? "El peso se depreció en " + fecha.getFullYear() : "El peso se apreció en " + fecha.getFullYear();
+  $("k-anio-d").textContent = (r.variacion_anio_pct > 0 ? "El peso se depreció en " : "El peso se apreció en ") + fecha.getFullYear();
   $("k-vol").textContent = r.volatilidad_30d_anualizada_pct == null ? "--" : num(r.volatilidad_30d_anualizada_pct, 2) + "%";
-
   const vals = serie.map(s => s.fix), m50 = mm(vals, 50).at(-1), m200 = mm(vals, 200).at(-1);
   if (m50 && m200) {
     const alza = m50 > m200, t = $("k-tend-tag");
@@ -316,84 +323,59 @@ function kpis(r) {
   const mn = r.min_52s.valor, mx = r.max_52s.valor, pos = mx > mn ? (u.fix - mn) / (mx - mn) * 100 : 50;
   $("k-pos").style.left = Math.min(100, Math.max(0, pos)) + "%";
   $("k-min").textContent = "Mín " + num(mn, 2); $("k-max").textContent = "Máx " + num(mx, 2);
+}
 
+function spark() {
   const ult = serie.slice(-60);
-  new Chart($("spark"), {
-    type: "line",
-    data: { labels: ult.map(s => s.fecha), datasets: [{ data: ult.map(s => s.fix), borderColor: COL.acento, borderWidth: 2, pointRadius: 0, tension: .3, fill: true,
-      backgroundColor: c => { const g = c.chart.ctx.createLinearGradient(0, 0, 0, 70); g.addColorStop(0, "rgba(45,212,191,.35)"); g.addColorStop(1, "rgba(45,212,191,0)"); return g; } }] },
-    options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } } }
-  });
+  nueva("spark", { type: "line",
+    data: { labels: ult.map(s => s.fecha), datasets: [{ data: ult.map(s => s.fix), borderColor: C.acento, borderWidth: 2, pointRadius: 0, tension: .3, fill: true, backgroundColor: degradado(C.acentoRgb, 76, .3) }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false } } } });
 }
 
-function dibujaPrincipal(meses) {
+function principal() {
   let ini = 0;
-  if (meses > 0) { const c = new Date(serie.at(-1).fecha); c.setMonth(c.getMonth() - meses); ini = serie.findIndex(s => new Date(s.fecha) >= c); }
+  if (mesesSel > 0) { const c = new Date(serie.at(-1).fecha); c.setMonth(c.getMonth() - mesesSel); ini = serie.findIndex(s => new Date(s.fecha) >= c); }
   const vals = serie.map(s => s.fix), d = serie.slice(ini);
-  const m50 = mm(vals, 50).slice(ini), m200 = mm(vals, 200).slice(ini);
-  const ocultos = [...document.querySelectorAll(".toggle")].filter(t => t.classList.contains("off")).map(t => +t.dataset.ds);
-  if (principal) principal.destroy();
-  principal = new Chart($("principal"), {
-    type: "line",
+  nueva("principal", { type: "line",
     data: { labels: d.map(s => s.fecha), datasets: [
-      { label: "FIX", data: d.map(s => s.fix), borderColor: COL.acento, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: .15, fill: true,
-        backgroundColor: c => { const g = c.chart.ctx.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, "rgba(45,212,191,.25)"); g.addColorStop(1, "rgba(45,212,191,0)"); return g; } },
-      { label: "MM 50", data: m50, borderColor: COL.ambar, borderWidth: 1.5, pointRadius: 0, tension: .2, hidden: ocultos.includes(1) },
-      { label: "MM 200", data: m200, borderColor: COL.violeta, borderWidth: 1.5, borderDash: [6, 4], pointRadius: 0, tension: .2, hidden: ocultos.includes(2) }
+      { label: "FIX", data: d.map(s => s.fix), borderColor: C.acento, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, tension: .15, fill: true, backgroundColor: degradado(C.acentoRgb, 420) },
+      { label: "MM 50", data: mm(vals, 50).slice(ini), borderColor: C.ambar, borderWidth: 1.6, pointRadius: 0, tension: .2, hidden: ocultos.has(1) },
+      { label: "MM 200", data: mm(vals, 200).slice(ini), borderColor: C.violeta, borderWidth: 1.6, borderDash: [6, 4], pointRadius: 0, tension: .2, hidden: ocultos.has(2) }
     ] },
-    options: {
-      responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: "index", intersect: false },
-      plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: { title: i => fFecha(i[0].label), label: c => " " + c.dataset.label + ": " + num(c.parsed.y) } } },
-      scales: {
-        x: { grid: { display: false }, ticks: { maxTicksLimit: 8, maxRotation: 0, callback: function (v) { return fFecha(this.getLabelForValue(v), { month: "short", year: "2-digit" }); } } },
-        y: { position: "right", grid: { color: COL.grid }, border: { display: false }, ticks: { callback: v => num(v, 2) } }
-      }
-    }
-  });
+    options: { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: "index", intersect: false },
+      plugins: { legend: { display: false }, tooltip: { ...tooltip(), callbacks: { title: i => fFecha(i[0].label), label: c => " " + c.dataset.label + ": " + num(c.parsed.y) } } },
+      scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 10, maxRotation: 0, callback: function (v) { return fFecha(this.getLabelForValue(v), { month: "short", year: "2-digit" }); } } },
+                y: { position: "right", grid: { color: C.grid }, border: { display: false }, ticks: { callback: v => num(v, 2) } } } } });
 }
 
-function rendimientos() {
-  const r = [], fechas = [];
-  for (let i = 1; i < serie.length; i++) { r.push(Math.log(serie[i].fix / serie[i - 1].fix)); fechas.push(serie[i].fecha); }
-  return { r, fechas };
-}
+function rendimientos() { const r = [], f = []; for (let i = 1; i < serie.length; i++) { r.push(Math.log(serie[i].fix / serie[i - 1].fix)); f.push(serie[i].fecha); } return { r, f }; }
 
 function histograma(r) {
-  const p = r.map(x => x * 100), lim = 2.55, ancho = 0.1, n = 51;
-  const cuentas = new Array(n).fill(0);
-  p.forEach(x => { const i = Math.floor((Math.max(-lim, Math.min(lim - 1e-9, x)) + lim) / ancho); cuentas[i]++; });
-  const etiquetas = cuentas.map((_, i) => (-lim + i * ancho + ancho / 2).toFixed(1));
-  new Chart($("histo"), {
-    type: "bar",
-    data: { labels: etiquetas, datasets: [{ data: cuentas, backgroundColor: etiquetas.map(e => +e > 0.001 ? "rgba(251,113,133,.75)" : +e < -0.001 ? "rgba(52,211,153,.75)" : "rgba(138,150,173,.6)"), borderRadius: 2, barPercentage: 1, categoryPercentage: .92 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, animation: false,
-      plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: { title: i => "Cambio " + (+i[0].label > 0 ? "+" : "") + i[0].label + "%", label: c => " " + c.parsed.y + " días" } } },
-      scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 11, maxRotation: 0, callback: function (v) { const e = +this.getLabelForValue(v); return Math.abs(Math.round(e * 2) - e * 2) < 0.01 ? (e > 0 ? "+" : "") + e.toFixed(1) + "%" : ""; } } },
-                y: { grid: { color: COL.grid }, border: { display: false } } }
-    }
-  });
+  const p = r.map(x => x * 100), lim = 2.55, ancho = .1, n = 51, cuentas = new Array(n).fill(0);
+  p.forEach(x => { cuentas[Math.floor((Math.max(-lim, Math.min(lim - 1e-9, x)) + lim) / ancho)]++; });
+  const et = cuentas.map((_, i) => (-lim + i * ancho + ancho / 2).toFixed(1));
+  nueva("histo", { type: "bar",
+    data: { labels: et, datasets: [{ data: cuentas, backgroundColor: et.map(e => +e > .001 ? `rgba(${C.subeRgb},.8)` : +e < -.001 ? `rgba(${C.bajaRgb},.8)` : C.tick), borderRadius: 2, barPercentage: 1, categoryPercentage: .9 }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false }, tooltip: { ...tooltip(), callbacks: { title: i => "Cambio " + (+i[0].label > 0 ? "+" : "") + i[0].label + "%", label: c => " " + c.parsed.y + " días" } } },
+      scales: { x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 0, callback: function (v) { const e = +this.getLabelForValue(v); return Math.abs(Math.round(e) - e) < .01 ? (e > 0 ? "+" : "") + e.toFixed(0) + "%" : ""; } } },
+                y: { grid: { color: C.grid }, border: { display: false } } } } });
   $("r-media").textContent = pct(p.reduce((a, b) => a + b, 0) / p.length, 3);
   $("r-std").textContent = num(std(p), 3) + "%";
-  $("r-min").textContent = pct(Math.min(...p)); $("r-min").style.color = COL.baja;
-  $("r-max").textContent = pct(Math.max(...p)); $("r-max").style.color = COL.sube;
+  $("r-min").textContent = pct(Math.min(...p)); $("r-min").style.color = C.baja;
+  $("r-max").textContent = pct(Math.max(...p)); $("r-max").style.color = C.sube;
 }
 
 function volatilidad(r, fechas) {
   const v = [], f = [];
   for (let i = 29; i < r.length; i++) { v.push(std(r.slice(i - 29, i + 1)) * Math.sqrt(252) * 100); f.push(fechas[i]); }
-  const paso = Math.max(1, Math.floor(v.length / 600)), vv = v.filter((_, i) => i % paso === 0), ff = f.filter((_, i) => i % paso === 0);
-  new Chart($("vol"), {
-    type: "line",
-    data: { labels: ff, datasets: [{ data: vv, borderColor: COL.violeta, borderWidth: 1.5, pointRadius: 0, tension: .2, fill: true,
-      backgroundColor: c => { const g = c.chart.ctx.createLinearGradient(0, 0, 0, 240); g.addColorStop(0, "rgba(167,139,250,.3)"); g.addColorStop(1, "rgba(167,139,250,0)"); return g; } }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: "index", intersect: false },
-      plugins: { legend: { display: false }, tooltip: { ...tooltip, callbacks: { title: i => fFecha(i[0].label), label: c => " Volatilidad: " + num(c.parsed.y, 2) + "%" } } },
+  const paso = Math.max(1, Math.floor(v.length / 600));
+  nueva("vol", { type: "line",
+    data: { labels: f.filter((_, i) => i % paso === 0), datasets: [{ data: v.filter((_, i) => i % paso === 0), borderColor: C.violeta, borderWidth: 1.5, pointRadius: 0, tension: .2, fill: true, backgroundColor: degradado(C.violetaRgb, 220, .25) }] },
+    options: { responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: "index", intersect: false },
+      plugins: { legend: { display: false }, tooltip: { ...tooltip(), callbacks: { title: i => fFecha(i[0].label), label: c => " Volatilidad: " + num(c.parsed.y, 2) + "%" } } },
       scales: { x: { grid: { display: false }, ticks: { maxTicksLimit: 6, maxRotation: 0, callback: function (x) { return fFecha(this.getLabelForValue(x), { year: "numeric" }); } } },
-                y: { position: "right", grid: { color: COL.grid }, border: { display: false }, ticks: { callback: x => x + "%" } } }
-    }
-  });
+                y: { position: "right", grid: { color: C.grid }, border: { display: false }, ticks: { callback: x => x + "%" } } } } });
   const imax = v.indexOf(Math.max(...v));
   $("v-act").textContent = num(v.at(-1), 1) + "%";
   $("v-prom").textContent = num(v.reduce((a, b) => a + b, 0) / v.length, 1) + "%";
@@ -402,62 +384,76 @@ function volatilidad(r, fechas) {
 }
 
 function mapaCalor() {
-  const cierres = {};
-  serie.forEach(s => { cierres[s.fecha.slice(0, 7)] = s.fix; });
+  const cierres = {}; serie.forEach(s => { cierres[s.fecha.slice(0, 7)] = s.fix; });
   const claves = Object.keys(cierres).sort(), cambios = {};
   for (let i = 1; i < claves.length; i++) cambios[claves[i]] = (cierres[claves[i]] / cierres[claves[i - 1]] - 1) * 100;
   const anios = [...new Set(claves.map(k => k.slice(0, 4)))].sort().reverse();
   const maxAbs = Math.max(...Object.values(cambios).map(Math.abs), 1);
-  const color = x => { const a = Math.min(1, Math.abs(x) / maxAbs) * .85 + .08; return x >= 0 ? `rgba(251,113,133,${a})` : `rgba(52,211,153,${a})`; };
+  const celda = (x, txt, titulo = "", extra = "") => {
+    const a = Math.min(1, Math.abs(x) / maxAbs) * .85 + .1, rgb = x >= 0 ? C.subeRgb : C.bajaRgb;
+    return `<td class="${extra}${a > .55 ? " fuerte" : ""}" style="background:rgba(${rgb},${a.toFixed(2)})" title="${titulo}">${txt}</td>`;
+  };
   let h = "<tr><th></th>" + MESES.map(m => `<th>${m}</th>`).join("") + "<th>Año</th></tr>";
   anios.forEach(a => {
     h += `<tr><th class="anio">${a}</th>`;
     for (let m = 1; m <= 12; m++) {
       const k = a + "-" + String(m).padStart(2, "0"), x = cambios[k];
-      h += x == null ? `<td class="vacia">·</td>` : `<td style="background:${color(x)}" title="${MESES[m - 1]} ${a}: ${pct(x)}">${(x > 0 ? "+" : "") + x.toFixed(1)}</td>`;
+      h += x == null ? `<td class="vacia">·</td>` : celda(x, (x > 0 ? "+" : "") + x.toFixed(1), `${MESES[m - 1]} ${a}: ${pct(x)}`);
     }
     const delAnio = serie.filter(s => s.fecha.startsWith(a)), previo = serie.filter(s => s.fecha < a + "-01-01").at(-1);
-    const base = previo ? previo.fix : delAnio[0].fix, tot = (delAnio.at(-1).fix / base - 1) * 100;
-    h += `<td class="total" style="background:${color(tot / 3)}">${(tot > 0 ? "+" : "") + tot.toFixed(1)}</td></tr>`;
+    const tot = (delAnio.at(-1).fix / (previo ? previo.fix : delAnio[0].fix) - 1) * 100;
+    h += celda(tot / 3, (tot > 0 ? "+" : "") + tot.toFixed(1), `${a}: ${pct(tot)}`, "total") + "</tr>";
   });
   $("heat").innerHTML = h;
 }
 
 function tablaUltimos() {
-  const u = serie.slice(-11);
-  let h = "<tr><th>Fecha</th><th>FIX</th><th>Cambio</th><th>%</th></tr>";
+  const u = serie.slice(-11); let h = "<tr><th>Fecha</th><th>FIX</th><th>Cambio</th><th>%</th></tr>";
   for (let i = u.length - 1; i >= 1; i--) {
-    const c = u[i].fix - u[i - 1].fix, p = (u[i].fix / u[i - 1].fix - 1) * 100, col = c > 0 ? COL.sube : c < 0 ? COL.baja : COL.tick;
+    const c = u[i].fix - u[i - 1].fix, p = (u[i].fix / u[i - 1].fix - 1) * 100, col = c > 0 ? C.sube : c < 0 ? C.baja : C.tick;
     h += `<tr><td>${fFecha(u[i].fecha, { weekday: "short", day: "numeric", month: "short" })}</td><td>${num(u[i].fix)}</td><td style="color:${col}">${(c > 0 ? "+" : "") + num(c)}</td><td style="color:${col}">${pct(p)}</td></tr>`;
   }
   $("ultimos").innerHTML = h;
 }
 
+function render() {
+  leeColores();
+  if (!serie.length) return;
+  kpis(resumen); spark(); principal();
+  const { r, f } = rendimientos();
+  histograma(r); volatilidad(r, f); mapaCalor(); tablaUltimos();
+}
+
+const etiquetaTema = () => { $("btnTema").textContent = document.documentElement.dataset.tema === "oscuro" ? "Tema claro" : "Tema oscuro"; };
+etiquetaTema();
+$("btnTema").addEventListener("click", () => {
+  const t = document.documentElement.dataset.tema === "oscuro" ? "claro" : "oscuro";
+  document.documentElement.dataset.tema = t; etiquetaTema();
+  try { localStorage.setItem("tema-fix", t); } catch (e) {}
+  render();
+});
+
 Promise.all([
   fetch("data/resumen.json", { cache: "no-store" }).then(r => { if (!r.ok) throw 0; return r.json(); }),
   fetch("data/tipo_cambio.csv", { cache: "no-store" }).then(r => { if (!r.ok) throw 0; return r.text(); })
-]).then(([resumen, csv]) => {
+]).then(([res, csv]) => {
   serie = csv.trim().split("\n").slice(1).map(l => { const [fecha, fix] = l.split(","); return { fecha, fix: +fix }; }).filter(s => s.fecha && !isNaN(s.fix));
   if (serie.length < 2) return vacio("El archivo de datos está vacío.");
+  resumen = res;
   $("contenido").appendChild($("tpl-datos").content.cloneNode(true));
-  const act = new Date(resumen.actualizado);
-  $("estado").className = "pill ok";
-  $("estado").innerHTML = `<i></i>Actualizado <b>${act.toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })}</b>`;
+  $("estado").className = "pill";
+  $("estado").innerHTML = `<i></i>Actualizado ${new Date(res.actualizado).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })}`;
   $("p-final").textContent = `GitHub Pages recalcula los indicadores en el navegador. Hoy: ${serie.length.toLocaleString("es-MX")} observaciones desde ${fFecha(serie[0].fecha)}.`;
-
-  kpis(resumen);
-  dibujaPrincipal(12);
-  const { r, fechas } = rendimientos();
-  histograma(r); volatilidad(r, fechas); mapaCalor(); tablaUltimos();
-
+  render();
   $("rangos").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     document.querySelectorAll("#rangos button").forEach(x => x.classList.toggle("activo", x === b));
-    dibujaPrincipal(+b.dataset.m);
+    mesesSel = +b.dataset.m; principal();
   });
-  document.querySelectorAll(".toggle").forEach(t => t.addEventListener("click", e => {
-    e.preventDefault(); t.classList.toggle("off");
-    principal.setDatasetVisibility(+t.dataset.ds, !t.classList.contains("off")); principal.update();
+  document.querySelectorAll(".toggle").forEach(t => t.addEventListener("click", () => {
+    const ds = +t.dataset.ds; t.classList.toggle("off");
+    t.classList.contains("off") ? ocultos.add(ds) : ocultos.delete(ds);
+    graficas.principal.setDatasetVisibility(ds, !ocultos.has(ds)); graficas.principal.update();
   }));
 }).catch(() => vacio("Falta configurar el token de Banxico y ejecutar el workflow por primera vez."));
 </script>
