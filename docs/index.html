@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tipo de cambio FIX · Monitor diario</title>
+<meta name="description" content="Monitor diario del tipo de cambio FIX peso-dólar de Banxico, actualizado automáticamente con un pipeline ETL en GitHub Actions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117; --panel: #161b22; --borde: #30363d; --texto: #e6edf3;
+    --suave: #8b949e; --acento: #2fa7a7; --sube: #e5534b; --baja: #3fb950;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--texto); font-family: Inter, system-ui, sans-serif; }
+  main { max-width: 1120px; margin: 0 auto; padding: 40px 20px 56px; }
+  header { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+  .eyebrow { color: var(--acento); font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 6px; }
+  h1 { font-size: 30px; margin: 0; letter-spacing: -.02em; }
+  .sub { color: var(--suave); margin: 6px 0 0; font-size: 15px; }
+  .estado { color: var(--suave); font-size: 13px; text-align: right; }
+  .estado b { color: var(--texto); font-weight: 500; }
+
+  .hero { display: grid; grid-template-columns: 1.1fr 2fr; gap: 16px; margin-bottom: 16px; }
+  .card { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 20px; }
+  .ultimo .label { color: var(--suave); font-size: 13px; }
+  .ultimo .valor { font-family: "JetBrains Mono", monospace; font-size: 46px; font-weight: 500; margin: 8px 0 4px; letter-spacing: -.02em; }
+  .ultimo .valor small { font-size: 16px; color: var(--suave); font-family: Inter, sans-serif; margin-left: 6px; }
+  .delta { font-size: 15px; font-weight: 600; }
+  .delta.sube { color: var(--sube); } .delta.baja { color: var(--baja); } .delta.igual { color: var(--suave); }
+  .nota { color: var(--suave); font-size: 12px; margin-top: 14px; line-height: 1.5; }
+
+  .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--borde); border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; }
+  .kpi { background: var(--panel); padding: 16px 18px; }
+  .kpi .label { color: var(--suave); font-size: 12px; }
+  .kpi .v { font-family: "JetBrains Mono", monospace; font-size: 20px; margin-top: 6px; }
+  .kpi .d { color: var(--suave); font-size: 12px; margin-top: 2px; }
+
+  .grafica-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .grafica-top h2 { font-size: 16px; margin: 0; }
+  .rangos { display: inline-flex; border: 1px solid var(--borde); border-radius: 8px; overflow: hidden; }
+  .rangos button { background: transparent; color: var(--suave); border: 0; padding: 7px 13px; font: 500 13px Inter, sans-serif; cursor: pointer; }
+  .rangos button + button { border-left: 1px solid var(--borde); }
+  .rangos button.activo { background: var(--acento); color: #04201f; }
+  .leyenda { display: flex; gap: 18px; color: var(--suave); font-size: 12px; margin-top: 10px; }
+  .leyenda span::before { content: ""; display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 6px; background: var(--acento); }
+  .leyenda span.mm::before { background: #d2a8ff; height: 0; border-top: 2px dashed #d2a8ff; }
+  .lienzo { position: relative; height: 380px; }
+
+  .vacio { text-align: center; padding: 80px 20px; color: var(--suave); }
+  .vacio h2 { color: var(--texto); font-size: 18px; }
+
+  footer { margin-top: 28px; color: var(--suave); font-size: 13px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  footer a { color: var(--acento); text-decoration: none; }
+  @media (max-width: 760px) { .hero { grid-template-columns: 1fr; } .estado { text-align: left; } .lienzo { height: 300px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <p class="eyebrow">Monitor diario · Banxico SIE</p>
+      <h1>Tipo de cambio FIX peso-dólar</h1>
+      <p class="sub">Pipeline ETL automatizado: extracción, limpieza, validación y publicación cada día hábil.</p>
+    </div>
+    <div class="estado" id="estado">Cargando datos…</div>
+  </header>
+
+  <div id="contenido">
+    <section class="hero">
+      <div class="card ultimo">
+        <div class="label" id="fechaUltimo">FIX</div>
+        <div class="valor"><span id="valorUltimo">--</span><small>MXN por USD</small></div>
+        <div class="delta" id="delta">--</div>
+        <p class="nota">Un valor mayor significa un peso más débil frente al dólar.</p>
+      </div>
+      <div class="kpis">
+        <div class="kpi"><div class="label">Media móvil 20 días</div><div class="v" id="mm20">--</div><div class="d" id="mm20d">&nbsp;</div></div>
+        <div class="kpi"><div class="label">Volatilidad 30 días (anualizada)</div><div class="v" id="vol">--</div><div class="d">Desv. estándar de rendimientos logarítmicos</div></div>
+        <div class="kpi"><div class="label">Rango 52 semanas</div><div class="v" id="rango">--</div><div class="d" id="rangod">&nbsp;</div></div>
+        <div class="kpi"><div class="label">Variación en el año</div><div class="v" id="anio">--</div><div class="d" id="aniod">&nbsp;</div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="grafica-top">
+        <h2>Serie histórica</h2>
+        <div class="rangos" id="rangos">
+          <button data-m="1">1M</button><button data-m="6">6M</button><button data-m="12" class="activo">1A</button><button data-m="60">5A</button><button data-m="0">Todo</button>
+        </div>
+      </div>
+      <div class="lienzo"><canvas id="grafica"></canvas></div>
+      <div class="leyenda"><span>FIX diario</span><span class="mm">Media móvil 20 días</span></div>
+    </section>
+  </div>
+
+  <footer>
+    <span>Fuente: Banco de México, serie SF43718. Datos actualizados por GitHub Actions.</span>
+    <span><a href="https://github.com/Zidnz/tipo-cambio-mx">Código</a> · <a href="data/tipo_cambio.csv">Descargar CSV</a> · <a href="https://zidnz.github.io/portafolio-omar-gutierrez/">Omar Gutiérrez</a></span>
+  </footer>
+</main>
+
+<script>
+const fmt = (x, d = 4) => x == null ? "--" : Number(x).toLocaleString("es-MX", { minimumFractionDigits: d, maximumFractionDigits: d });
+const fFecha = iso => new Date(iso + "T12:00:00").toLocaleDateString("es-MX", { day: "numeric", month: "short", year: "numeric" });
+let serie = [], grafica = null;
+
+function sinDatos(msg) {
+  document.getElementById("contenido").innerHTML =
+    `<div class="card vacio"><h2>Aún no hay datos publicados</h2><p>${msg}</p></div>`;
+  document.getElementById("estado").textContent = "";
+}
+
+function mediaMovil(vals, n) {
+  const out = []; let suma = 0;
+  vals.forEach((v, i) => { suma += v; if (i >= n) suma -= vals[i - n]; out.push(i >= n - 1 ? suma / n : null); });
+  return out;
+}
+
+function dibuja(meses) {
+  let datos = serie;
+  if (meses > 0) {
+    const corte = new Date(serie[serie.length - 1].fecha); corte.setMonth(corte.getMonth() - meses);
+    datos = serie.filter(d => new Date(d.fecha) >= corte);
+  }
+  const offset = serie.length - datos.length;
+  const mm = mediaMovil(serie.map(d => d.fix), 20).slice(offset);
+  const cfg = {
+    type: "line",
+    data: {
+      labels: datos.map(d => d.fecha),
+      datasets: [
+        { data: datos.map(d => d.fix), borderColor: "#2fa7a7", borderWidth: 2, pointRadius: 0, tension: 0.15, fill: true,
+          backgroundColor: ctx => { const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 380); g.addColorStop(0, "rgba(47,167,167,.28)"); g.addColorStop(1, "rgba(47,167,167,0)"); return g; } },
+        { data: mm, borderColor: "#d2a8ff", borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, tension: 0.15, fill: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { backgroundColor: "#161b22", borderColor: "#30363d", borderWidth: 1, titleColor: "#e6edf3", bodyColor: "#e6edf3",
+          callbacks: { title: i => fFecha(i[0].label), label: c => (c.datasetIndex ? "MM20: " : "FIX: ") + fmt(c.parsed.y) } }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: "#8b949e", maxTicksLimit: 8, maxRotation: 0,
+             callback: function (v) { const d = new Date(this.getLabelForValue(v) + "T12:00:00"); return d.toLocaleDateString("es-MX", { month: "short", year: "2-digit" }); } } },
+        y: { grid: { color: "rgba(48,54,61,.6)" }, ticks: { color: "#8b949e", callback: v => fmt(v, 2) } }
+      }
+    }
+  };
+  if (grafica) grafica.destroy();
+  grafica = new Chart(document.getElementById("grafica"), cfg);
+}
+
+function pinta(r) {
+  document.getElementById("fechaUltimo").textContent = "FIX del " + fFecha(r.fecha);
+  document.getElementById("valorUltimo").textContent = fmt(r.ultimo);
+  const d = document.getElementById("delta"), v = r.variacion_diaria;
+  d.className = "delta " + (v > 0 ? "sube" : v < 0 ? "baja" : "igual");
+  d.textContent = (v > 0 ? "+" : "") + fmt(v) + " (" + (v > 0 ? "+" : "") + fmt(r.variacion_diaria_pct, 2) + "%) vs. día hábil anterior";
+  document.getElementById("mm20").textContent = fmt(r.media_movil_20);
+  const dif = r.ultimo - r.media_movil_20;
+  document.getElementById("mm20d").textContent = "FIX " + (dif >= 0 ? "por arriba" : "por debajo") + " en " + fmt(Math.abs(dif));
+  document.getElementById("vol").textContent = r.volatilidad_30d_anualizada_pct == null ? "--" : fmt(r.volatilidad_30d_anualizada_pct, 2) + "%";
+  document.getElementById("rango").textContent = fmt(r.min_52s.valor, 2) + " – " + fmt(r.max_52s.valor, 2);
+  document.getElementById("rangod").textContent = "Mín. " + fFecha(r.min_52s.fecha) + " · Máx. " + fFecha(r.max_52s.fecha);
+  const a = r.variacion_anio_pct;
+  document.getElementById("anio").textContent = (a > 0 ? "+" : "") + fmt(a, 2) + "%";
+  document.getElementById("aniod").textContent = a > 0 ? "El peso se depreció" : a < 0 ? "El peso se apreció" : "Sin cambio";
+  const act = new Date(r.actualizado);
+  document.getElementById("estado").innerHTML = `Actualizado <b>${act.toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" })}</b><br>${r.observaciones.toLocaleString("es-MX")} observaciones desde ${fFecha(r.desde)}`;
+}
+
+Promise.all([
+  fetch("data/resumen.json", { cache: "no-store" }).then(r => { if (!r.ok) throw 0; return r.json(); }),
+  fetch("data/tipo_cambio.csv", { cache: "no-store" }).then(r => { if (!r.ok) throw 0; return r.text(); })
+]).then(([resumen, csv]) => {
+  serie = csv.trim().split("\n").slice(1).map(l => { const [fecha, fix] = l.split(","); return { fecha, fix: +fix }; });
+  if (!serie.length) return sinDatos("El pipeline todavía no ha corrido.");
+  pinta(resumen);
+  dibuja(12);
+  document.getElementById("rangos").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    document.querySelectorAll(".rangos button").forEach(x => x.classList.toggle("activo", x === b));
+    dibuja(+b.dataset.m);
+  });
+}).catch(() => sinDatos("El pipeline todavía no ha corrido. Ejecuta el workflow en la pestaña Actions."));
+</script>
+</body>
+</html>
