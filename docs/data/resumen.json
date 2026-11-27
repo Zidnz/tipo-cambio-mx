@@ -1,0 +1,22 @@
+{
+  "serie": "SF43718",
+  "descripcion": "Tipo de cambio FIX, pesos por dólar (Banxico)",
+  "fecha": "2026-11-26",
+  "ultimo": 19.7203,
+  "variacion_diaria": 0.0163,
+  "variacion_diaria_pct": 0.083,
+  "media_movil_20": 18.8606,
+  "volatilidad_30d_anualizada_pct": 10.51,
+  "min_52s": {
+    "valor": 16.8748,
+    "fecha": "2026-09-04"
+  },
+  "max_52s": {
+    "valor": 19.7203,
+    "fecha": "2026-11-26"
+  },
+  "variacion_anio_pct": 9.55,
+  "observaciones": 2993,
+  "desde": "2015-01-02",
+  "actualizado": "2026-11-27T10:42-06:00"
+}
